@@ -1,10 +1,10 @@
-package coordinator.interfaces;
+package coordinator.models.statemachine;
 
 import org.springframework.statemachine.action.Action;
 import coordinator.models.Events;
 import coordinator.models.States;
 
-public interface StateMachineActions {
+public interface StateAction {
 
     Action<States, Events> transferAcceptedAction();
     Action<States, Events> validationStartedAction();
@@ -32,5 +32,4 @@ public interface StateMachineActions {
     Action<States, Events> balanceUndoFinishedAction();
     Action<States, Events> signalingUndoStartedAction();
     Action<States, Events> signalingUndoFinishedAction();
-    
 }

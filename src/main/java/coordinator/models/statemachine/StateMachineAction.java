@@ -1,12 +1,10 @@
-package coordinator.statemachine;
+package coordinator.models.statemachine;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
-
 import coordinator.config.MessagingConfiguration;
-import coordinator.interfaces.StateMachineActions;
 import coordinator.models.Events;
 import coordinator.models.MonitorPayload;
 import coordinator.models.States;
@@ -22,7 +20,7 @@ import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
 
 @Configuration
-public class DefaultStateMachineActions implements StateMachineActions {
+public class StateMachineAction implements StateAction {
 	
 	@Autowired
 	private MonitorPayloadsRepository payloadsRepository;

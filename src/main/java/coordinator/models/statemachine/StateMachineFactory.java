@@ -1,21 +1,20 @@
-package coordinator.factories;
+package coordinator.models.statemachine;
 
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineBuilder;
 import org.springframework.statemachine.config.StateMachineBuilder.Builder;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-
-import coordinator.interfaces.StateMachineActions;
 import coordinator.models.Events;
 import coordinator.models.States;
+import coordinator.models.statemachine.StateAction;
 
 public class StateMachineFactory {
 
-    private StateMachineActions stateMachineActions;
+    private StateAction stateMachineAction;
 
-    public StateMachineFactory(StateMachineActions stateMachineActions) {
-        this.stateMachineActions = stateMachineActions;
+    public StateMachineFactory(StateAction stateMachineActions) {
+        this.stateMachineAction = stateMachineActions;
     }
 
     public StateMachine<States, Events> buildStateMachine() throws Exception {
@@ -76,33 +75,33 @@ public class StateMachineFactory {
 			.withExternal()
 				.source(States.MONITORING_NOT_STARTED).target(States.WAITING_VALIDATION)
 				.event(Events.TransferAccepted)
-				.action(stateMachineActions.transferAcceptedAction())
+				.action(stateMachineAction.transferAcceptedAction())
 			.and().withExternal()
 				.source(States.WAITING_VALIDATION).target(States.DOING_VALIDATION)
 				.event(Events.ValidationStarted)
-				.action(stateMachineActions.validationStartedAction())
+				.action(stateMachineAction.validationStartedAction())
 			.and().withExternal()
 				.source(States.DOING_VALIDATION).target(States.FINISHED_VALIDATION)
 				.event(Events.ValidationSucceded)
-				.action(stateMachineActions.validationSuccededAction())
+				.action(stateMachineAction.validationSuccededAction())
 			.and().withFork()
 				.source(States.FINISHED_VALIDATION).target(States.PARALLEL_TASKS)
 			.and().withExternal()
 				.source(States.WAITING_SIGNALING).target(States.DOING_SIGNALING)
 				.event(Events.SignalingStarted)
-				.action(stateMachineActions.signalingStartedAction())
+				.action(stateMachineAction.signalingStartedAction())
 			.and().withExternal()
 				.source(States.DOING_SIGNALING).target(States.FINISHED_SIGNALING)
 				.event(Events.SignalingSucceded)
-				.action(stateMachineActions.signalingSuccededAction())
+				.action(stateMachineAction.signalingSuccededAction())
 			.and().withExternal()
 				.source(States.WAITING_BALANCE).target(States.DOING_BALANCE)
 				.event(Events.BalanceStarted)
-				.action(stateMachineActions.balanceStartedAction())
+				.action(stateMachineAction.balanceStartedAction())
 			.and().withExternal()
 				.source(States.DOING_BALANCE).target(States.FINISHED_BALANCE)
 				.event(Events.BalanceSucceded)
-				.action(stateMachineActions.balanceSuccededAction())
+				.action(stateMachineAction.balanceSuccededAction())
 			.and().withJoin()
 				.source(States.PARALLEL_TASKS).target(States.JOIN_PARALLEL_TASKS)
 			.and().withExternal()
@@ -110,76 +109,76 @@ public class StateMachineFactory {
 			.and().withExternal()
 				.source(States.WAITING_RECEIPT).target(States.DOING_RECEIPT)
 				.event(Events.ReceiptStarted)
-				.action(stateMachineActions.receiptStartedAction())
+				.action(stateMachineAction.receiptStartedAction())
 			.and().withExternal()
 				.source(States.DOING_RECEIPT).target(States.FINISHED_RECEIPT)
 				.event(Events.ReceiptSucceded)
-				.action(stateMachineActions.receiptSuccededAction())	
+				.action(stateMachineAction.receiptSuccededAction())	
 			// --------- Error Handling Validation  ---------
 			.and().withExternal()
 				.source(States.DOING_VALIDATION).target(States.ERROR_VALIDATION)
 				.event(Events.ValidationError)
-				.action(stateMachineActions.validationErrorAction())
+				.action(stateMachineAction.validationErrorAction())
 			.and().withExternal()
 				.source(States.ERROR_VALIDATION).target(States.WAITING_VALIDATION)
 				.event(Events.AdhocValidationRequested)
-				.action(stateMachineActions.adhocValidationRequestedAction())
+				.action(stateMachineAction.adhocValidationRequestedAction())
 			.and().withExternal()
 				.source(States.DOING_VALIDATION).target(States.FAILED_VALIDATION)
 				.event(Events.ValidationFailed)
-				.action(stateMachineActions.validationFailedAction())
+				.action(stateMachineAction.validationFailedAction())
 			// --------- Error Handling Signaling ---------
 			.and().withExternal()
 				.source(States.DOING_SIGNALING).target(States.ERROR_SIGNALING)
 				.event(Events.SignalingError)
-				.action(stateMachineActions.signalingErrorAction())
+				.action(stateMachineAction.signalingErrorAction())
 			.and().withExternal()
 				.source(States.ERROR_SIGNALING).target(States.WAITING_SIGNALING)
 				.event(Events.AdhocSignalingRequested)
-				.action(stateMachineActions.adhocSignalingRequestedAction())
+				.action(stateMachineAction.adhocSignalingRequestedAction())
 			// --------- Error Handling Balance ---------
 			.and().withExternal()
 				.source(States.DOING_BALANCE).target(States.ERROR_BALANCE)
 				.event(Events.BalanceError)
-				.action(stateMachineActions.balanceErrorAction())
+				.action(stateMachineAction.balanceErrorAction())
 			// --------- Error Handling Undo All ---------
 			.and().withExternal()
 				.source(States.ERROR_SIGNALING).target(States.UNDO_ALL)
 				.event(Events.UndoAllRequested)
-				.action(stateMachineActions.undoAllAction())
+				.action(stateMachineAction.undoAllAction())
 			.and().withExternal()
 				.source(States.ERROR_BALANCE).target(States.UNDO_ALL)
 				.event(Events.UndoAllRequested)
-				.action(stateMachineActions.undoAllAction())
+				.action(stateMachineAction.undoAllAction())
             .and().withExternal()
                 .source(States.ERROR_RECEIPT).target(States.UNDO_ALL)
                 .event(Events.UndoAllRequested)
-                .action(stateMachineActions.undoAllAction())
+                .action(stateMachineAction.undoAllAction())
 			.and().withFork()
 				.source(States.UNDO_ALL).target(States.PARALLEL_TASKS_UNDO)
             .and().withExternal()
                 .source(States.WAITING_UNDOING_BALANCE).target(States.UNDOING_BALANCE)
                 .event(Events.BalanceUndoStarted)
-				.action(stateMachineActions.balanceUndoStartedAction())
+				.action(stateMachineAction.balanceUndoStartedAction())
 			.and().withExternal()
 				.source(States.UNDOING_BALANCE).target(States.FINISHED_UNDOING_BALANCE)
 				.event(Events.BalanceUndoFinished)
-				.action(stateMachineActions.balanceUndoFinishedAction())
+				.action(stateMachineAction.balanceUndoFinishedAction())
             .and().withExternal()
                 .source(States.WAITING_UNDOING_SIGNALING).target(States.UNDOING_SIGNALING)
                 .event(Events.SignalingUndoStarted)
-				.action(stateMachineActions.signalingUndoStartedAction())
+				.action(stateMachineAction.signalingUndoStartedAction())
             .and().withExternal()
                 .source(States.UNDOING_SIGNALING).target(States.FINISHED_UNDOING_SIGNALING)
                 .event(Events.SignalingUndoSucceded)
-				.action(stateMachineActions.signalingUndoFinishedAction())
+				.action(stateMachineAction.signalingUndoFinishedAction())
             .and().withJoin()
 				.source(States.PARALLEL_TASKS_UNDO).target(States.JOIN_UNDO)
 			.and().withExternal()
 				.source(States.JOIN_UNDO).target(States.UNDO_ALL_FINISHED)
 			.and().withInternal()
 				.source(States.UNDO_ALL_FINISHED)
-				.action(stateMachineActions.transferFailedAction())
+				.action(stateMachineAction.transferFailedAction())
 			.and().withExternal()
                 .source(States.UNDO_ALL_FINISHED).target(States.TRANSFER_FAILED)
 				.event(Events.TransferFailed)
@@ -187,12 +186,11 @@ public class StateMachineFactory {
             .and().withExternal()
                 .source(States.DOING_RECEIPT).target(States.ERROR_RECEIPT)
                 .event(Events.ReceiptError)
-                .action(stateMachineActions.receiptErrorAction())
+                .action(stateMachineAction.receiptErrorAction())
             .and().withExternal()
                 .source(States.ERROR_RECEIPT).target(States.WAITING_RECEIPT)
                 .event(Events.AdhocReceiptRequested)
-                .action(stateMachineActions.adhocReceiptRequestedAction())
-				;
+                .action(stateMachineAction.adhocReceiptRequestedAction());
     }
 
 }
