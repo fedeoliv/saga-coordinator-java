@@ -5,7 +5,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.persist.StateMachinePersister;
-import coordinator.models.MonitorPayload;
+import coordinator.models.TransferPayload;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.transitions.Events;
 import coordinator.models.transitions.States;
@@ -28,18 +28,18 @@ public class StateMachineHelper {
         return currentState;
     }
 
-    public States sendEventForTransaction(MonitorPayload monitorPayload) throws Exception{
-        resetStateMachineFromStore(monitorPayload.getTransactionId());
+    public States sendEventForTransaction(TransferPayload transferPayload) throws Exception{
+        resetStateMachineFromStore(transferPayload.getTransactionId());
 
-        setExtendedState(SpringMessageTools.transactionId, monitorPayload.getTransactionId());
+        setExtendedState(SpringMessageTools.transactionId, transferPayload.getTransactionId());
 
-        Events eventTypeEnum = Events.valueOf(monitorPayload.getEventType());
+        Events eventTypeEnum = Events.valueOf(transferPayload.getEventType());
         
         String stateBeforeStr = stateMachine.getState().getId().toString();
         
         feedMachine(
-            monitorPayload.getMessageId(), monitorPayload.getTransactionId(),
-            monitorPayload.getTransactionId(), eventTypeEnum);
+            transferPayload.getMessageId(), transferPayload.getTransactionId(),
+            transferPayload.getTransactionId(), eventTypeEnum);
 
         States stateAfter = stateMachine.getState().getId();
         String stateAfterStr = stateAfter.toString();

@@ -7,8 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import coordinator.config.MessagingConfiguration;
 import coordinator.helpers.StateMachineHelper;
-import coordinator.models.MonitorPayload;
-import coordinator.repositories.MonitorPayloadsRepository;
+import coordinator.models.TransferPayload;
+import coordinator.repositories.PayloadRepository;
 import coordinator.shared.avro.messages.headers.HeaderConfig;
 import coordinator.shared.avro.messages.headers.Headers;
 import coordinator.shared.avro.serializers.AvroSerializer;
@@ -23,7 +23,7 @@ public class EventCheckerService {
     private StateMachineHelper stateMachineService;
 
     @Autowired
-	private MonitorPayloadsRepository payloadsRepository;
+	private PayloadRepository payloadRepository;
 
     public EventCheckerService() {
         consumer = new ConsumerService<>(MessagingConfiguration.TOPIC, MessagingConfiguration.CONSUMER_GROUP);
@@ -44,15 +44,15 @@ public class EventCheckerService {
                     String transactionId = headers.get(HeaderConfig.TransactionId).get();
                     String messageId = headers.get(HeaderConfig.MessageId).get();
 
-                    MonitorPayload monitorPayload = new MonitorPayload();
-                    monitorPayload.setMessageId(messageId);
-                    monitorPayload.setTransactionId(transactionId);
-                    monitorPayload.setEventType(eventType);
-                    monitorPayload.setMessageBytes(messageBytes);
+                    TransferPayload transferPayload = new TransferPayload();
+                    transferPayload.setMessageId(messageId);
+                    transferPayload.setTransactionId(transactionId);
+                    transferPayload.setEventType(eventType);
+                    transferPayload.setMessageBytes(messageBytes);
                     
-                    payloadsRepository.Add(monitorPayload);
+                    payloadRepository.Add(transferPayload);
 
-                    stateMachineService.sendEventForTransaction(monitorPayload);
+                    stateMachineService.sendEventForTransaction(transferPayload);
 
                 } catch (Exception e) {
                     e.printStackTrace();

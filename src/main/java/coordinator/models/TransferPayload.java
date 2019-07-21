@@ -1,6 +1,6 @@
 package coordinator.models;
 
-public class MonitorPayload {
+public class TransferPayload {
 
     private String messageId;
     private String transactionId;

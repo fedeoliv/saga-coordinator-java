@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import coordinator.config.MessagingConfiguration;
-import coordinator.models.MonitorPayload;
+import coordinator.models.TransferPayload;
 import coordinator.models.payloads.transfer.TransferAccepted;
-import coordinator.repositories.MonitorPayloadsRepository;
+import coordinator.repositories.PayloadRepository;
 import coordinator.shared.avro.messages.Message;
 import coordinator.shared.avro.messages.headers.MessageHeader;
 import coordinator.shared.avro.serializers.AvroSerializer;
@@ -23,7 +23,7 @@ import coordinator.models.transitions.States;
 public class StateMachineAction implements StateAction {
 	
 	@Autowired
-	private MonitorPayloadsRepository payloadsRepository;
+	private PayloadRepository payloadsRepository;
 
 	// @Autowired
 	// ProducerService<String, byte[]> producerService;
@@ -259,7 +259,7 @@ public class StateMachineAction implements StateAction {
 	private void sendTransferFailedMessage(StateContext<States, Events> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
-		MonitorPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
+		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
 				EventTypes.TransferAccepted, "transactionId", transactionId);
 
 		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
@@ -277,7 +277,7 @@ public class StateMachineAction implements StateAction {
 	}
 
 	private void sendUndoAllRequestMessage(StateContext<States, Events> context) {
-		MonitorPayload transferAcceptedRecord = findTransferAcceptedRecord(context);
+		TransferPayload transferAcceptedRecord = findTransferAcceptedRecord(context);
 
 		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
 
@@ -293,16 +293,16 @@ public class StateMachineAction implements StateAction {
 		producerService.send(undoAllRequested.getCorrelationId(), msgBytes);
 	}
 
-	private TransferAccepted deserializeTransferPayload(MonitorPayload transferAcceptedRecord) {
+	private TransferAccepted deserializeTransferPayload(TransferPayload transferAcceptedRecord) {
 		byte[] messageBytes = transferAcceptedRecord.getMessageBytes();
 		TransferAccepted transferAccepted = AvroSerializer.deserializePayload(messageBytes);
 		return transferAccepted;
 	}
 
-	private MonitorPayload findTransferAcceptedRecord(StateContext<States, Events> context) {
+	private TransferPayload findTransferAcceptedRecord(StateContext<States, Events> context) {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
-		MonitorPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
+		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
 				EventTypes.TransferAccepted, "transactionId", transactionId);
 		return transferAcceptedRecord;
 	}

@@ -1,14 +1,14 @@
 
 package coordinator.repositories;
 
-import coordinator.models.MonitorPayload;
+import coordinator.models.TransferPayload;
 
-public class MonitorPayloadsRepository extends DefaultRepository<String, MonitorPayload> {
+public class PayloadRepository extends DefaultRepository<String, TransferPayload> {
 
     private static final String COLLECTION = "monitorPayloads";
     private static final String KEYNAME = "messageId";
 
-    public MonitorPayloadsRepository(String mongoConnectionString, String database) {
+    public PayloadRepository(String mongoConnectionString, String database) {
         super(mongoConnectionString, database, COLLECTION, KEYNAME);
     }
 }
