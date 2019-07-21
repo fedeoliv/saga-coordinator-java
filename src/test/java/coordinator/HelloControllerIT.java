@@ -1,4 +1,4 @@
-package hello;
+package coordinator;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package hello;
+package coordinator;
 
 import java.util.Arrays;
 
