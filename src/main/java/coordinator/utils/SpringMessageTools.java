@@ -2,8 +2,8 @@ package coordinator.utils;
 
 import org.springframework.statemachine.StateContext;
 
-import coordinator.models.Events;
-import coordinator.models.States;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 public class SpringMessageTools {
 

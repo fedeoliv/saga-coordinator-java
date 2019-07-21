@@ -5,11 +5,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.persist.StateMachinePersister;
-
-import coordinator.models.Events;
 import coordinator.models.MonitorPayload;
-import coordinator.models.States;
 import coordinator.utils.SpringMessageTools;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 public class StateMachineHelper {
 

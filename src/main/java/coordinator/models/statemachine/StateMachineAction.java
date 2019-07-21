@@ -5,9 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import coordinator.config.MessagingConfiguration;
-import coordinator.models.Events;
 import coordinator.models.MonitorPayload;
-import coordinator.models.States;
 import coordinator.models.payloads.transfer.TransferAccepted;
 import coordinator.repositories.MonitorPayloadsRepository;
 import coordinator.shared.avro.messages.Message;
@@ -18,6 +16,8 @@ import coordinator.utils.EventTypes;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 @Configuration
 public class StateMachineAction implements StateAction {

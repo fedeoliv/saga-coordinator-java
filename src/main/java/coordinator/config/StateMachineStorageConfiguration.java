@@ -11,8 +11,8 @@ import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.data.redis.RedisStateMachineContextRepository;
 import org.springframework.statemachine.data.redis.RedisStateMachinePersister;
 import org.springframework.statemachine.persist.RepositoryStateMachinePersist;
-import coordinator.models.Events;
-import coordinator.models.States;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 @Configuration
 public class StateMachineStorageConfiguration {

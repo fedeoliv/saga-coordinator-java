@@ -1,8 +1,9 @@
 package coordinator.models.statemachine;
 
 import org.springframework.statemachine.action.Action;
-import coordinator.models.Events;
-import coordinator.models.States;
+
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 public interface StateAction {
 

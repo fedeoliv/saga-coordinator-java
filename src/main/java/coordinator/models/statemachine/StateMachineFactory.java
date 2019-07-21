@@ -5,9 +5,9 @@ import org.springframework.statemachine.config.StateMachineBuilder;
 import org.springframework.statemachine.config.StateMachineBuilder.Builder;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-import coordinator.models.Events;
-import coordinator.models.States;
 import coordinator.models.statemachine.StateAction;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 public class StateMachineFactory {
 

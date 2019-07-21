@@ -1,4 +1,4 @@
-package coordinator.models;
+package coordinator.models.transitions;
 
 public enum States {
     //Initial State

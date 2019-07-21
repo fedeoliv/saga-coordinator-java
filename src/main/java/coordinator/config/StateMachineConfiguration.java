@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateMachine;
 import coordinator.helpers.StateMachineHelper;
-import coordinator.models.Events;
-import coordinator.models.States;
 import coordinator.models.statemachine.StateAction;
 import coordinator.models.statemachine.StateMachineFactory;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 @Configuration
 public class StateMachineConfiguration {

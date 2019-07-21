@@ -1,20 +1,17 @@
 package coordinator.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import coordinator.helpers.StateMachineHelper;
-import coordinator.models.Events;
 import coordinator.models.MonitorPayload;
-import coordinator.models.States;
-
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import coordinator.models.transitions.Events;
+import coordinator.models.transitions.States;
 
 @RestController
 public class CoordinatorController {
