@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
-import coordinator.config.MessagingConfiguration;
 import coordinator.models.TransferPayload;
+import coordinator.models.messaging.ProducerService;
 import coordinator.models.payloads.transfer.TransferAccepted;
 import coordinator.repositories.PayloadRepository;
 import coordinator.shared.avro.messages.Message;
 import coordinator.shared.avro.messages.headers.MessageHeader;
 import coordinator.shared.avro.serializers.AvroSerializer;
-import coordinator.shared.kafka.ProducerService;
 import coordinator.utils.EventTypes;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.payloads.transfer.TransferError;
@@ -22,12 +21,10 @@ import coordinator.models.transitions.States;
 @Configuration
 public class StateMachineAction implements StateAction {
 	
+	private ProducerService producer;
+
 	@Autowired
 	private PayloadRepository payloadsRepository;
-
-	// @Autowired
-	// ProducerService<String, byte[]> producerService;
-
 
 	public Action<States, Events> transferAcceptedAction() {
 		return new Action<States, Events>() {
@@ -272,8 +269,10 @@ public class StateMachineAction implements StateAction {
 		byte[] msgBytes = AvroSerializer.serialize(message);
 
 		// TODO: Use dependency injection to autowire producerService
-		ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
-		producerService.send(tranferError.getCorrelationId(), msgBytes);
+		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
+		// producerService.send(tranferError.getCorrelationId(), msgBytes);
+
+		producer.send(msgBytes);
 	}
 
 	private void sendUndoAllRequestMessage(StateContext<States, Events> context) {
@@ -289,8 +288,10 @@ public class StateMachineAction implements StateAction {
 		byte[] msgBytes = AvroSerializer.serialize(message);
 
 		// TODO: Use dependency injection to autowire producerService
-		ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
-		producerService.send(undoAllRequested.getCorrelationId(), msgBytes);
+		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
+		// producerService.send(undoAllRequested.getCorrelationId(), msgBytes);
+
+		producer.send(msgBytes);
 	}
 
 	private TransferAccepted deserializeTransferPayload(TransferPayload transferAcceptedRecord) {
