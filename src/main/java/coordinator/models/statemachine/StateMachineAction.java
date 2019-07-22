@@ -11,7 +11,6 @@ import coordinator.repositories.PayloadRepository;
 import coordinator.shared.avro.messages.Message;
 import coordinator.shared.avro.messages.headers.MessageHeader;
 import coordinator.shared.avro.serializers.AvroSerializer;
-import coordinator.utils.EventTypes;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
@@ -256,14 +255,14 @@ public class StateMachineAction implements StateAction {
 	private void sendTransferFailedMessage(StateContext<States, Events> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
-		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
-				EventTypes.TransferAccepted, "transactionId", transactionId);
-
+		TransferPayload transferAcceptedRecord = payloadsRepository
+			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
+				
 		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
 
 		TransferError tranferError = createTransferErrorFromTransfer(transferAccepted, textMessage);
 
-		MessageHeader header = createHeaderFromTransfer(transferAccepted, EventTypes.TransferError);
+		MessageHeader header = createHeaderFromTransfer(transferAccepted, TransferError.class.getSimpleName());
 
 		Message<TransferError> message = new Message<>(header, tranferError);
 		byte[] msgBytes = AvroSerializer.serialize(message);
@@ -282,7 +281,7 @@ public class StateMachineAction implements StateAction {
 
 		UndoAllRequested undoAllRequested = createUndoAllRequestFromTransfer(transferAccepted);
 
-		MessageHeader header = createHeaderFromTransfer(transferAccepted, EventTypes.UndoAllRequested);
+		MessageHeader header = createHeaderFromTransfer(transferAccepted, UndoAllRequested.class.getSimpleName());
 
 		Message<UndoAllRequested> message = new Message<>(header, undoAllRequested);
 		byte[] msgBytes = AvroSerializer.serialize(message);
@@ -304,7 +303,7 @@ public class StateMachineAction implements StateAction {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
 		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
-				EventTypes.TransferAccepted, "transactionId", transactionId);
+				TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
 		return transferAcceptedRecord;
 	}
 
