@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import coordinator.models.TransferPayload;
+import coordinator.models.messaging.ProducerResult;
 import coordinator.models.messaging.ProducerService;
 import coordinator.models.payloads.transfer.TransferAccepted;
 import coordinator.repositories.PayloadRepository;
@@ -129,7 +130,14 @@ public class StateMachineAction implements StateAction {
 			@Override
 			public void execute(StateContext<States, Events> context) {
 				String message = "Transfer has failed! Sorry for that!";
-				sendTransferFailedMessage(context, message);
+				ProducerResult result = sendTransferFailedMessage(context, message);
+
+				if (result.isValid()) {
+					System.out.println("transferFailedAction sent message successfully");
+				} else {
+					System.out.println(result.getErrorMessage());
+					System.out.println(result.getDetailedErrorMessage());
+				}
 			}
 		};
 	}
@@ -147,7 +155,14 @@ public class StateMachineAction implements StateAction {
 		return new Action<States, Events>() {
 			@Override
 			public void execute(StateContext<States, Events> context) {
-				sendUndoAllRequestMessage(context);
+				ProducerResult result = sendUndoAllRequestMessage(context);
+
+				if (result.isValid()) {
+					System.out.println("signalingErrorAction sent message successfully");
+				} else {
+					System.out.println(result.getErrorMessage());
+					System.out.println(result.getDetailedErrorMessage());
+				}
 			}
 		};
 	}
@@ -157,7 +172,14 @@ public class StateMachineAction implements StateAction {
 		return new Action<States, Events>() {
 			@Override
 			public void execute(StateContext<States, Events> context) {
-				sendUndoAllRequestMessage(context);
+				ProducerResult result = sendUndoAllRequestMessage(context);
+
+				if (result.isValid()) {
+					System.out.println("balanceErrorAction sent message successfully");
+				} else {
+					System.out.println(result.getErrorMessage());
+					System.out.println(result.getDetailedErrorMessage());
+				}
 			}
 		};
 	}
@@ -166,7 +188,14 @@ public class StateMachineAction implements StateAction {
 		return new Action<States, Events>() {
 			@Override
 			public void execute(StateContext<States, Events> context) {
-				sendUndoAllRequestMessage(context);
+				ProducerResult result = sendUndoAllRequestMessage(context);
+
+				if (result.isValid()) {
+					System.out.println("receiptErrorAction sent message successfully");
+				} else {
+					System.out.println(result.getErrorMessage());
+					System.out.println(result.getDetailedErrorMessage());
+				}
 			}
 		};
 	}
@@ -252,7 +281,7 @@ public class StateMachineAction implements StateAction {
 		};
 	}
 
-	private void sendTransferFailedMessage(StateContext<States, Events> context, String textMessage) {
+	private ProducerResult sendTransferFailedMessage(StateContext<States, Events> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
 		TransferPayload transferAcceptedRecord = payloadsRepository
@@ -271,10 +300,10 @@ public class StateMachineAction implements StateAction {
 		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
 		// producerService.send(tranferError.getCorrelationId(), msgBytes);
 
-		producer.send(msgBytes);
+		return producer.send(msgBytes);
 	}
 
-	private void sendUndoAllRequestMessage(StateContext<States, Events> context) {
+	private ProducerResult sendUndoAllRequestMessage(StateContext<States, Events> context) {
 		TransferPayload transferAcceptedRecord = findTransferAcceptedRecord(context);
 
 		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
@@ -290,7 +319,7 @@ public class StateMachineAction implements StateAction {
 		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
 		// producerService.send(undoAllRequested.getCorrelationId(), msgBytes);
 
-		producer.send(msgBytes);
+		return producer.send(msgBytes);
 	}
 
 	private TransferAccepted deserializeTransferPayload(TransferPayload transferAcceptedRecord) {

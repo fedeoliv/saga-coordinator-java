@@ -16,12 +16,21 @@ public class ProducerService {
         this.transactionStreams = transactionStreams;
     }
 
-    public void send(final byte[] messageBytes) {
+    public ProducerResult send(final byte[] messageBytes) {
+        ProducerResult result = new ProducerResult();
         MessageChannel messageChannel = transactionStreams.output();
 
-        messageChannel.send(MessageBuilder
+        try {
+            messageChannel.send(MessageBuilder
             .withPayload(messageBytes)
             .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN)
             .build());
+        } catch (RuntimeException e) {
+            result.setValid(false);
+            result.setErrorMessage("Error while sending message to event stream");
+            result.setDetailedErrorMessage(e.getMessage());
+        }
+
+        return result;
     }
 }
