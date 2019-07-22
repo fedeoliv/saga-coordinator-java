@@ -6,6 +6,8 @@ Coordination is a Saga's approach where the coordination logic is centralized in
 
 The Saga Coordinator produces commands to an event stream and the respective saga participants consume these commands. These participants produce their events after performing their operations and the coordinator consume these events.
 
+![Saga Coordinator](./images/saga-coordinator.jpg)
+
 The Saga Coordinator can be implemented as a Finite State Machine (FSM), where it produces commands and waits for events produced by the participants to drive the flow. Events are represented as nodes, while commands are represented as transitions between nodes.
 
 ## About the sample
