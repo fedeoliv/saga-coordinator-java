@@ -15,8 +15,8 @@ import coordinator.shared.avro.serializers.AvroSerializer;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 @Configuration
 public class StateMachineAction implements StateAction {
@@ -26,109 +26,109 @@ public class StateMachineAction implements StateAction {
 	@Autowired
 	private PayloadRepository payloadsRepository;
 
-	public Action<States, Events> transferAcceptedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> transferAcceptedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> validationStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> validationStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> validationSuccededAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> validationSuccededAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> balanceStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> balanceStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> balanceSuccededAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> balanceSuccededAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> signalingStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> signalingStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> signalingSuccededAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> signalingSuccededAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> receiptStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> receiptStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> joiningAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> joiningAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> receiptSuccededAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> receiptSuccededAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> transferSuccededAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> transferSuccededAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> transferFailedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> transferFailedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 				String message = "Transfer has failed! Sorry for that!";
 				ProducerResult result = sendTransferFailedMessage(context, message);
 
@@ -142,19 +142,19 @@ public class StateMachineAction implements StateAction {
 		};
 	}
 
-	public Action<States, Events> validationErrorAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> validationErrorAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> signalingErrorAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> signalingErrorAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 				ProducerResult result = sendUndoAllRequestMessage(context);
 
 				if (result.isValid()) {
@@ -168,10 +168,10 @@ public class StateMachineAction implements StateAction {
 	}
 
 	@Override
-	public Action<States, Events> balanceErrorAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> balanceErrorAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 				ProducerResult result = sendUndoAllRequestMessage(context);
 
 				if (result.isValid()) {
@@ -184,10 +184,10 @@ public class StateMachineAction implements StateAction {
 		};
 	}
 
-	public Action<States, Events> receiptErrorAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> receiptErrorAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 				ProducerResult result = sendUndoAllRequestMessage(context);
 
 				if (result.isValid()) {
@@ -200,88 +200,88 @@ public class StateMachineAction implements StateAction {
 		};
 	}
 
-	public Action<States, Events> adhocValidationRequestedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> adhocValidationRequestedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 
 	}
 
-	public Action<States, Events> adhocSignalingRequestedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> adhocSignalingRequestedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> adhocReceiptRequestedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> adhocReceiptRequestedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> undoAllAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> undoAllAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 			}
 		};
 	}
 
-	public Action<States, Events> balanceUndoStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> balanceUndoStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
-
-			}
-		};
-	}
-
-	public Action<States, Events> balanceUndoFinishedAction() {
-		return new Action<States, Events>() {
-			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> signalingUndoStartedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> balanceUndoFinishedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> signalingUndoFinishedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> signalingUndoStartedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	public Action<States, Events> validationFailedAction() {
-		return new Action<States, Events>() {
+	public Action<State, Event> signalingUndoFinishedAction() {
+		return new Action<State, Event>() {
 			@Override
-			public void execute(StateContext<States, Events> context) {
+			public void execute(StateContext<State, Event> context) {
 
 			}
 		};
 	}
 
-	private ProducerResult sendTransferFailedMessage(StateContext<States, Events> context, String textMessage) {
+	public Action<State, Event> validationFailedAction() {
+		return new Action<State, Event>() {
+			@Override
+			public void execute(StateContext<State, Event> context) {
+
+			}
+		};
+	}
+
+	private ProducerResult sendTransferFailedMessage(StateContext<State, Event> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
 		TransferPayload transferAcceptedRecord = payloadsRepository
@@ -303,7 +303,7 @@ public class StateMachineAction implements StateAction {
 		return producer.send(msgBytes);
 	}
 
-	private ProducerResult sendUndoAllRequestMessage(StateContext<States, Events> context) {
+	private ProducerResult sendUndoAllRequestMessage(StateContext<State, Event> context) {
 		TransferPayload transferAcceptedRecord = findTransferAcceptedRecord(context);
 
 		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
@@ -328,7 +328,7 @@ public class StateMachineAction implements StateAction {
 		return transferAccepted;
 	}
 
-	private TransferPayload findTransferAcceptedRecord(StateContext<States, Events> context) {
+	private TransferPayload findTransferAcceptedRecord(StateContext<State, Event> context) {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
 		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",

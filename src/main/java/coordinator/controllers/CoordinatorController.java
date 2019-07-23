@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 @RestController
 public class CoordinatorController {
@@ -25,7 +25,7 @@ public class CoordinatorController {
     }
 
     @PostMapping("/api/debug/state/{transactionId}/sendEvent/{eventType}")
-    public String changeState(@PathVariable String transactionId, @PathVariable Events eventType) throws Exception {
+    public String changeState(@PathVariable String transactionId, @PathVariable Event eventType) throws Exception {
         Assert.notNull(transactionId, "transactionId must be set");
         Assert.notNull(eventType, "eventType must be set");
 
@@ -35,18 +35,17 @@ public class CoordinatorController {
         transferPayload.setMessageId(UUID.randomUUID().toString());
         transferPayload.setMessageBytes(null);
 
-        States stateBefore = stateMachineService.getStateForTransaction(transactionId);
-       
-        States stateAfter = stateMachineService.sendEventForTransaction(transferPayload);
+        State previousState = stateMachineService.getStateForTransaction(transactionId);
+        State currentState = stateMachineService.sendEventForTransaction(transferPayload);
 
-        return "Changed from " + stateBefore + " to " + stateAfter;
+        return "Changed from " + previousState + " to " + currentState;
     }
 
     @GetMapping("/api/debug/state/{transactionId}")
     public String getState(@PathVariable String transactionId) throws Exception {
         Assert.notNull(transactionId, "transactionId must be set");
 
-        States currentState = stateMachineService.getStateForTransaction(transactionId);
+        State currentState = stateMachineService.getStateForTransaction(transactionId);
 
         return currentState.name();
     }

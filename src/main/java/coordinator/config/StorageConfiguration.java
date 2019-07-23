@@ -16,6 +16,6 @@ public class StorageConfiguration {
     
     @Bean
     public PayloadRepository buildPayloadRepository() {
-        return new PayloadRepository(connectionString, database );
+        return new PayloadRepository(connectionString, database);
     }
 } 

@@ -7,8 +7,8 @@ import org.springframework.statemachine.StateMachine;
 import coordinator.helpers.StateMachineHelper;
 import coordinator.models.statemachine.StateAction;
 import coordinator.models.statemachine.StateMachineFactory;
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 @Configuration
 public class StateMachineConfiguration {
@@ -17,12 +17,12 @@ public class StateMachineConfiguration {
     private StateAction stateMachineAction;
 
     @Bean
-    public StateMachine<States, Events> stateMachine() throws Exception {
+    public StateMachine<State, Event> stateMachine() throws Exception {
         return new StateMachineFactory(stateMachineAction).buildStateMachine();
     }
     
     @Bean
-    public StateMachineHelper buildStateMachineService(){
+    public StateMachineHelper buildStateMachineService() {
         return new StateMachineHelper();
     }
 }

@@ -11,43 +11,54 @@ import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.data.redis.RedisStateMachineContextRepository;
 import org.springframework.statemachine.data.redis.RedisStateMachinePersister;
 import org.springframework.statemachine.persist.RepositoryStateMachinePersist;
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 @Configuration
 public class StateMachineStorageConfiguration {
 
 	@Value("${spring.redis.host}")
-	private String REDIS_HOSTNAME ;
+	private String hostName;
 
 	@Value("${spring.redis.port}")
-	private int REDIS_PORT;
+	private int port;
 	
 	@Value("${spring.redis.password}")
-	private String REDIS_PASS;
+	private String password;
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
-		configuration.setPassword(REDIS_PASS);
+		RedisStandaloneConfiguration configuration = createRedisStandaloneConfig();
 		JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().useSsl().build();
-		JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
+		
+		return createFactory(configuration, jedisClientConfiguration);
+	}
+
+	@Bean
+	public StateMachinePersist<State, Event, String> stateMachinePersist(RedisConnectionFactory connectionFactory) {
+		
+		RedisStateMachineContextRepository<State, Event> repository = new RedisStateMachineContextRepository<State, Event>(connectionFactory);
+		
+		return new RepositoryStateMachinePersist<State, Event>(repository);
+	}
+
+	@Bean
+	public RedisStateMachinePersister<State, Event> redisStateMachinePersister(
+			StateMachinePersist<State, Event, String> stateMachinePersist) {
+		return new RedisStateMachinePersister<State, Event>(stateMachinePersist);
+	}
+
+	private RedisStandaloneConfiguration createRedisStandaloneConfig() {
+		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(hostName, port);
+		config.setPassword(password);
+
+		return config;
+	}
+
+	private JedisConnectionFactory createFactory(RedisStandaloneConfiguration redisConfig, JedisClientConfiguration jedisConfig) {
+		JedisConnectionFactory factory = new JedisConnectionFactory(redisConfig, jedisConfig);
 		factory.afterPropertiesSet();
 
 		return factory;
-	}
-
-	@Bean
-	public StateMachinePersist<States, Events, String> stateMachinePersist(RedisConnectionFactory connectionFactory) {
-		
-		RedisStateMachineContextRepository<States, Events> repository = new RedisStateMachineContextRepository<States, Events>(connectionFactory);
-		
-		return new RepositoryStateMachinePersist<States, Events>(repository);
-	}
-
-	@Bean
-	public RedisStateMachinePersister<States, Events> redisStateMachinePersister(
-			StateMachinePersist<States, Events, String> stateMachinePersist) {
-		return new RedisStateMachinePersister<States, Events>(stateMachinePersist);
 	}
 }

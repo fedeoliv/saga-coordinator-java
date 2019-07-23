@@ -2,35 +2,35 @@ package coordinator.models.statemachine;
 
 import org.springframework.statemachine.action.Action;
 
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 public interface StateAction {
 
-    Action<States, Events> transferAcceptedAction();
-    Action<States, Events> validationStartedAction();
-    Action<States, Events> validationSuccededAction();
-    Action<States, Events> balanceStartedAction();
-    Action<States, Events> balanceSuccededAction();
-    Action<States, Events> signalingStartedAction();
-    Action<States, Events> signalingSuccededAction();
-    Action<States, Events> receiptStartedAction();
-    Action<States, Events> receiptSuccededAction();
-    Action<States, Events> transferSuccededAction();
-    Action<States, Events> transferFailedAction();
+    Action<State, Event> transferAcceptedAction();
+    Action<State, Event> validationStartedAction();
+    Action<State, Event> validationSuccededAction();
+    Action<State, Event> balanceStartedAction();
+    Action<State, Event> balanceSuccededAction();
+    Action<State, Event> signalingStartedAction();
+    Action<State, Event> signalingSuccededAction();
+    Action<State, Event> receiptStartedAction();
+    Action<State, Event> receiptSuccededAction();
+    Action<State, Event> transferSuccededAction();
+    Action<State, Event> transferFailedAction();
 
-    Action<States, Events> validationFailedAction();
-    Action<States, Events> validationErrorAction();
-    Action<States, Events> signalingErrorAction();
-    Action<States, Events> balanceErrorAction();
-    Action<States, Events> receiptErrorAction();
-    Action<States, Events> adhocValidationRequestedAction();
-    Action<States, Events> adhocSignalingRequestedAction();
-    Action<States, Events> adhocReceiptRequestedAction();
+    Action<State, Event> validationFailedAction();
+    Action<State, Event> validationErrorAction();
+    Action<State, Event> signalingErrorAction();
+    Action<State, Event> balanceErrorAction();
+    Action<State, Event> receiptErrorAction();
+    Action<State, Event> adhocValidationRequestedAction();
+    Action<State, Event> adhocSignalingRequestedAction();
+    Action<State, Event> adhocReceiptRequestedAction();
 
-    Action<States, Events> undoAllAction();
-    Action<States, Events> balanceUndoStartedAction();
-    Action<States, Events> balanceUndoFinishedAction();
-    Action<States, Events> signalingUndoStartedAction();
-    Action<States, Events> signalingUndoFinishedAction();
+    Action<State, Event> undoAllAction();
+    Action<State, Event> balanceUndoStartedAction();
+    Action<State, Event> balanceUndoFinishedAction();
+    Action<State, Event> signalingUndoStartedAction();
+    Action<State, Event> signalingUndoFinishedAction();
 }

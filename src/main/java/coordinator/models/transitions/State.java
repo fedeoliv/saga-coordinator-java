@@ -1,6 +1,6 @@
 package coordinator.models.transitions;
 
-public enum States {
+public enum State {
     //Initial State
     MONITORING_NOT_STARTED,
     

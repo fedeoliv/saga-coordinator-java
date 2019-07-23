@@ -1,6 +1,6 @@
 package coordinator.models.transitions;
 
-public enum Events {
+public enum Event {
     // Success
     TransferAccepted,
 

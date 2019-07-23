@@ -7,33 +7,33 @@ import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.persist.StateMachinePersister;
 import coordinator.models.TransferPayload;
 import coordinator.utils.SpringMessageTools;
-import coordinator.models.transitions.Events;
-import coordinator.models.transitions.States;
+import coordinator.models.transitions.Event;
+import coordinator.models.transitions.State;
 
 public class StateMachineHelper {
 
     public final String PREFIX = "transactionId:";
 
     @Autowired
-    private StateMachine<States, Events> stateMachine;
+    private StateMachine<State, Event> stateMachine;
 
     @Autowired
-    private StateMachinePersister<States, Events, String> stateMachinePersister;
+    private StateMachinePersister<State, Event, String> stateMachinePersister;
 
-    public States getStateForTransaction(String transactionId) throws Exception{
+    public State getStateForTransaction(String transactionId) throws Exception{
         resetStateMachineFromStore(transactionId);
         
-        States currentState = stateMachine.getState().getId();
+        State currentState = stateMachine.getState().getId();
 
         return currentState;
     }
 
-    public States sendEventForTransaction(TransferPayload transferPayload) throws Exception{
+    public State sendEventForTransaction(TransferPayload transferPayload) throws Exception{
         resetStateMachineFromStore(transferPayload.getTransactionId());
 
         setExtendedState(SpringMessageTools.transactionId, transferPayload.getTransactionId());
 
-        Events eventTypeEnum = Events.valueOf(transferPayload.getEventType());
+        Event eventTypeEnum = Event.valueOf(transferPayload.getEventType());
         
         String stateBeforeStr = stateMachine.getState().getId().toString();
         
@@ -41,7 +41,7 @@ public class StateMachineHelper {
             transferPayload.getMessageId(), transferPayload.getTransactionId(),
             transferPayload.getTransactionId(), eventTypeEnum);
 
-        States stateAfter = stateMachine.getState().getId();
+        State stateAfter = stateMachine.getState().getId();
         String stateAfterStr = stateAfter.toString();
 
         System.out.printf("\n#Changed from state %s to state %s\n", stateBeforeStr, stateAfterStr);
@@ -50,9 +50,9 @@ public class StateMachineHelper {
     }
 
     private void feedMachine(
-        String messageId, String transactionId, String stateId, Events id) throws Exception {
+        String messageId, String transactionId, String stateId, Event id) throws Exception {
             
-        Message<Events> msg = MessageBuilder
+        Message<Event> msg = MessageBuilder
                                     .withPayload(id)
                                     .setHeader(SpringMessageTools.messageId, messageId)
                                     .setHeader(SpringMessageTools.transactionId, transactionId)
@@ -67,7 +67,7 @@ public class StateMachineHelper {
         stateMachinePersister.persist(stateMachine, PREFIX + stateId);
     }
 
-    private StateMachine<States, Events> resetStateMachineFromStore(String stateId) throws Exception {
+    private StateMachine<State, Event> resetStateMachineFromStore(String stateId) throws Exception {
         return stateMachinePersister.restore(stateMachine, PREFIX + stateId);
     }
 
