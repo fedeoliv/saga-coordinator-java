@@ -68,6 +68,27 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
             <version>2.2.0.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-schema</artifactId>
+            <version>2.2.0.RELEASE</version>
+        </dependency>
+        <!-- Avro -->
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-compiler</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-maven-plugin</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>5.3.0</version>
+        </dependency>
         <!-- Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -94,22 +115,6 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<type>jar</type>
-        </dependency>
-        <!-- Avro -->
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro</artifactId>
-            <version>1.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-avro-serializer</artifactId>
-            <version>4.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
         </dependency>
         <!-- Lombok -->
         <dependency>
@@ -155,25 +160,20 @@
                 <version>1.8.2</version>
                 <executions>
                     <execution>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>schema</goal>
-                    </goals>
-                    <configuration>
-                        <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
-                        <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-                        <fieldVisibility>PRIVATE</fieldVisibility>
-                        <includes>
-                        <include>**/*.avsc</include>
-                        </includes>
-                        <testIncludes>
-                        <testInclude>**/*.test</testInclude>
-                        </testIncludes>
-                    </configuration>
+                        <id>schemas</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                            <goal>protocol</goal>
+                            <goal>idl-protocol</goal>
+                        </goals>
+                        <configuration>                        
+                            <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>

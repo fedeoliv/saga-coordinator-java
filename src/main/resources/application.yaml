@@ -1,0 +1,40 @@
+spring:
+  redis:
+    host:
+    port:
+    password:
+    ssl:
+  cosmosdb:
+    connectionString: 
+    database: 
+    collection:
+    key: 
+  cloud:
+    stream:
+      default: 
+        producer:
+          useNativeEncoding: true
+        consumer:  
+          useNativeEncoding: true     
+      bindings:
+        input:
+          destination: my-input-topic
+          content-type: application/*+avro
+          group: my-consumer-group
+          consumer:
+            concurrency: 3
+            autoCommitOffset: false
+        output:
+          destination: my-output-topic
+          content-type: application/*+avro
+      kafka:
+          binder:      
+            producer-properties:
+              key.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+              value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+              schema.registry.url: http://localhost:8081 
+            consumer-properties:
+              key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+              value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+              schema.registry.url: http://localhost:8081
+              specific.avro.reader: true

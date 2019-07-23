@@ -1,11 +1,11 @@
 package coordinator.helpers;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.persist.StateMachinePersister;
-import coordinator.models.TransferPayload;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.transitions.Event;
 import coordinator.models.transitions.State;
@@ -28,18 +28,13 @@ public class StateMachineHelper {
         return currentState;
     }
 
-    public State sendEventForTransaction(TransferPayload transferPayload) throws Exception{
-        resetStateMachineFromStore(transferPayload.getTransactionId());
-
-        setExtendedState(SpringMessageTools.transactionId, transferPayload.getTransactionId());
-
-        Event eventTypeEnum = Event.valueOf(transferPayload.getEventType());
+    public State sendEventForTransaction(String transactionId, Event eventType) throws Exception{
+        resetStateMachineFromStore(transactionId);
+        setExtendedState(SpringMessageTools.transactionId, transactionId);
         
         String stateBeforeStr = stateMachine.getState().getId().toString();
         
-        feedMachine(
-            transferPayload.getMessageId(), transferPayload.getTransactionId(),
-            transferPayload.getTransactionId(), eventTypeEnum);
+        feedMachine(UUID.randomUUID().toString(), transactionId, transactionId, eventType);
 
         State stateAfter = stateMachine.getState().getId();
         String stateAfterStr = stateAfter.toString();
@@ -49,14 +44,13 @@ public class StateMachineHelper {
         return stateAfter;
     }
 
-    private void feedMachine(
-        String messageId, String transactionId, String stateId, Event id) throws Exception {
+    private void feedMachine(String messageId, String transactionId, String stateId, Event id) throws Exception {
             
         Message<Event> msg = MessageBuilder
-                                    .withPayload(id)
-                                    .setHeader(SpringMessageTools.messageId, messageId)
-                                    .setHeader(SpringMessageTools.transactionId, transactionId)
-                                    .build();
+            .withPayload(id)
+            .setHeader(SpringMessageTools.messageId, messageId)
+            .setHeader(SpringMessageTools.transactionId, transactionId)
+            .build();
         
         stateMachine.sendEvent(msg);
 
@@ -73,5 +67,5 @@ public class StateMachineHelper {
 
 	public void setExtendedState(String transactionid, String transactionIdValue) {
         stateMachine.getExtendedState().getVariables().put(SpringMessageTools.transactionId, transactionIdValue);
-	}
+    }
 }

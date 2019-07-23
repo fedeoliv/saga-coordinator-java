@@ -1,9 +1,0 @@
-{
-    "namespace": "coordinator.shared.avro.messages",
-    "type": "record",
-    "name": "AvroMessage",
-    "fields": [
-        {"name": "headers", "type": {"type": "map", "values": "string"}},
-        {"name": "payload",  "type": "bytes"}
-    ]
-}
