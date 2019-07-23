@@ -2,8 +2,6 @@ package coordinator.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import coordinator.helpers.StateMachineHelper;
-import coordinator.models.TransferPayload;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,14 +27,8 @@ public class CoordinatorController {
         Assert.notNull(transactionId, "transactionId must be set");
         Assert.notNull(eventType, "eventType must be set");
 
-        TransferPayload transferPayload = new TransferPayload();
-        transferPayload.setEventType(eventType.toString());
-        transferPayload.setTransactionId(transactionId);
-        transferPayload.setMessageId(UUID.randomUUID().toString());
-        transferPayload.setMessageBytes(null);
-
         State previousState = stateMachineService.getStateForTransaction(transactionId);
-        State currentState = stateMachineService.sendEventForTransaction(transferPayload);
+        State currentState = stateMachineService.sendEventForTransaction(transactionId, eventType);
 
         return "Changed from " + previousState + " to " + currentState;
     }

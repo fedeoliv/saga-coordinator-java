@@ -27,6 +27,7 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
         this.keyName = keyName;
         this.gson = new Gson();
         this.beanTypeTEntity = GetBeanType();
+        mongoClient.close();
     }
 
     @Override

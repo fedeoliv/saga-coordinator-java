@@ -2,13 +2,13 @@
 package coordinator.repositories;
 
 import org.springframework.beans.factory.annotation.Value;
-import coordinator.models.TransferPayload;
+import org.springframework.messaging.Message;
 
-public class PayloadRepository extends DefaultRepository<String, TransferPayload> {
-    @Value("${cosmosdb.collection}")
+public class PayloadRepository extends DefaultRepository<String, Message<?>> {
+    @Value("${spring.cosmosdb.collection}")
     private static String collection;
 
-    @Value("${cosmosdb.key.name}")
+    @Value("${spring.cosmosdb.key}")
     private static String keyName;
 
     public PayloadRepository(String mongoConnectionString, String database) {

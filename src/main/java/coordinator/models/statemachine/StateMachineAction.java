@@ -2,16 +2,16 @@ package coordinator.models.statemachine;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
-import coordinator.models.TransferPayload;
+import coordinator.models.messaging.MessageHeader;
 import coordinator.models.messaging.ProducerResult;
 import coordinator.models.messaging.ProducerService;
 import coordinator.models.payloads.transfer.TransferAccepted;
 import coordinator.repositories.PayloadRepository;
-import coordinator.shared.avro.messages.Message;
-import coordinator.shared.avro.messages.headers.MessageHeader;
-import coordinator.shared.avro.serializers.AvroSerializer;
 import coordinator.utils.SpringMessageTools;
 import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
@@ -284,56 +284,37 @@ public class StateMachineAction implements StateAction {
 	private ProducerResult sendTransferFailedMessage(StateContext<State, Event> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
-		TransferPayload transferAcceptedRecord = payloadsRepository
+		Message<?> transferAcceptedMessage = payloadsRepository
 			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
 				
-		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
-
-		TransferError tranferError = createTransferErrorFromTransfer(transferAccepted, textMessage);
-
+		TransferAccepted transferAccepted = (TransferAccepted) transferAcceptedMessage.getPayload();
+		TransferError transferError = createTransferErrorFromTransfer(transferAccepted, textMessage);
 		MessageHeader header = createHeaderFromTransfer(transferAccepted, TransferError.class.getSimpleName());
 
-		Message<TransferError> message = new Message<>(header, tranferError);
-		byte[] msgBytes = AvroSerializer.serialize(message);
-
-		// TODO: Use dependency injection to autowire producerService
-		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
-		// producerService.send(tranferError.getCorrelationId(), msgBytes);
-
-		return producer.send(msgBytes);
+		Message<TransferError> message = MessageBuilder
+                .withPayload(transferError)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, header)
+				.build();
+				
+		return producer.send(message);
 	}
 
 	private ProducerResult sendUndoAllRequestMessage(StateContext<State, Event> context) {
-		TransferPayload transferAcceptedRecord = findTransferAcceptedRecord(context);
-
-		TransferAccepted transferAccepted = deserializeTransferPayload(transferAcceptedRecord);
-
-		UndoAllRequested undoAllRequested = createUndoAllRequestFromTransfer(transferAccepted);
-
-		MessageHeader header = createHeaderFromTransfer(transferAccepted, UndoAllRequested.class.getSimpleName());
-
-		Message<UndoAllRequested> message = new Message<>(header, undoAllRequested);
-		byte[] msgBytes = AvroSerializer.serialize(message);
-
-		// TODO: Use dependency injection to autowire producerService
-		// ProducerService<String, byte[]> producerService = new ProducerService<>(MessagingConfiguration.TOPIC);
-		// producerService.send(undoAllRequested.getCorrelationId(), msgBytes);
-
-		return producer.send(msgBytes);
-	}
-
-	private TransferAccepted deserializeTransferPayload(TransferPayload transferAcceptedRecord) {
-		byte[] messageBytes = transferAcceptedRecord.getMessageBytes();
-		TransferAccepted transferAccepted = AvroSerializer.deserializePayload(messageBytes);
-		return transferAccepted;
-	}
-
-	private TransferPayload findTransferAcceptedRecord(StateContext<State, Event> context) {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
-		TransferPayload transferAcceptedRecord = payloadsRepository.FindOneByFilter("eventType",
-				TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
-		return transferAcceptedRecord;
+		Message<?> transferAcceptedMessage = payloadsRepository
+			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
+
+		TransferAccepted transferAccepted = (TransferAccepted) transferAcceptedMessage.getPayload();
+		UndoAllRequested undoAllRequested = createUndoAllRequestFromTransfer(transferAccepted);
+		MessageHeader header = createHeaderFromTransfer(transferAccepted, UndoAllRequested.class.getSimpleName());
+
+		Message<UndoAllRequested> message = MessageBuilder
+                .withPayload(undoAllRequested)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, header)
+				.build();
+
+		return producer.send(message);
 	}
 
 	private MessageHeader createHeaderFromTransfer(TransferAccepted transferAccepted, String eventType) {
