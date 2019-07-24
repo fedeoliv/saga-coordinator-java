@@ -1,7 +1,7 @@
 {
     "type": "record",
     "name": "BalanceStarted",
-    "namespace": "coordinator.shared.avro.messages",
+    "namespace": "coordinator.schemas.balance",
     "fields": [
         {
             "name": "transactionId",

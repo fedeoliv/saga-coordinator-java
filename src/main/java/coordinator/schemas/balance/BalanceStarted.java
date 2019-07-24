@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package coordinator.shared.avro.messages;
+package coordinator.schemas.balance;
 
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.message.BinaryMessageEncoder;
@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -155298110652786301L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BalanceStarted\",\"namespace\":\"coordinator.shared.avro.messages\",\"fields\":[{\"name\":\"transactionId\",\"type\":\"string\"},{\"name\":\"correlationId\",\"type\":\"string\"},{\"name\":\"accountFromId\",\"type\":\"string\"},{\"name\":\"accountToId\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 2226818707293421402L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BalanceStarted\",\"namespace\":\"coordinator.schemas.balance\",\"fields\":[{\"name\":\"transactionId\",\"type\":\"string\"},{\"name\":\"correlationId\",\"type\":\"string\"},{\"name\":\"accountFromId\",\"type\":\"string\"},{\"name\":\"accountToId\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -190,8 +190,8 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
    * Creates a new BalanceStarted RecordBuilder.
    * @return A new BalanceStarted RecordBuilder
    */
-  public static coordinator.shared.avro.messages.BalanceStarted.Builder newBuilder() {
-    return new coordinator.shared.avro.messages.BalanceStarted.Builder();
+  public static coordinator.schemas.balance.BalanceStarted.Builder newBuilder() {
+    return new coordinator.schemas.balance.BalanceStarted.Builder();
   }
 
   /**
@@ -199,8 +199,8 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
    * @param other The existing builder to copy.
    * @return A new BalanceStarted RecordBuilder
    */
-  public static coordinator.shared.avro.messages.BalanceStarted.Builder newBuilder(coordinator.shared.avro.messages.BalanceStarted.Builder other) {
-    return new coordinator.shared.avro.messages.BalanceStarted.Builder(other);
+  public static coordinator.schemas.balance.BalanceStarted.Builder newBuilder(coordinator.schemas.balance.BalanceStarted.Builder other) {
+    return new coordinator.schemas.balance.BalanceStarted.Builder(other);
   }
 
   /**
@@ -208,8 +208,8 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
    * @param other The existing instance to copy.
    * @return A new BalanceStarted RecordBuilder
    */
-  public static coordinator.shared.avro.messages.BalanceStarted.Builder newBuilder(coordinator.shared.avro.messages.BalanceStarted other) {
-    return new coordinator.shared.avro.messages.BalanceStarted.Builder(other);
+  public static coordinator.schemas.balance.BalanceStarted.Builder newBuilder(coordinator.schemas.balance.BalanceStarted other) {
+    return new coordinator.schemas.balance.BalanceStarted.Builder(other);
   }
 
   /**
@@ -233,7 +233,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(coordinator.shared.avro.messages.BalanceStarted.Builder other) {
+    private Builder(coordinator.schemas.balance.BalanceStarted.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.transactionId)) {
         this.transactionId = data().deepCopy(fields()[0].schema(), other.transactionId);
@@ -261,7 +261,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
      * Creates a Builder by copying an existing BalanceStarted instance
      * @param other The existing instance to copy.
      */
-    private Builder(coordinator.shared.avro.messages.BalanceStarted other) {
+    private Builder(coordinator.schemas.balance.BalanceStarted other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.transactionId)) {
         this.transactionId = data().deepCopy(fields()[0].schema(), other.transactionId);
@@ -298,7 +298,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * @param value The value of 'transactionId'.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder setTransactionId(java.lang.CharSequence value) {
+    public coordinator.schemas.balance.BalanceStarted.Builder setTransactionId(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.transactionId = value;
       fieldSetFlags()[0] = true;
@@ -318,7 +318,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * Clears the value of the 'transactionId' field.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder clearTransactionId() {
+    public coordinator.schemas.balance.BalanceStarted.Builder clearTransactionId() {
       transactionId = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -337,7 +337,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * @param value The value of 'correlationId'.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder setCorrelationId(java.lang.CharSequence value) {
+    public coordinator.schemas.balance.BalanceStarted.Builder setCorrelationId(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.correlationId = value;
       fieldSetFlags()[1] = true;
@@ -357,7 +357,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * Clears the value of the 'correlationId' field.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder clearCorrelationId() {
+    public coordinator.schemas.balance.BalanceStarted.Builder clearCorrelationId() {
       correlationId = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -376,7 +376,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * @param value The value of 'accountFromId'.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder setAccountFromId(java.lang.CharSequence value) {
+    public coordinator.schemas.balance.BalanceStarted.Builder setAccountFromId(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.accountFromId = value;
       fieldSetFlags()[2] = true;
@@ -396,7 +396,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * Clears the value of the 'accountFromId' field.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder clearAccountFromId() {
+    public coordinator.schemas.balance.BalanceStarted.Builder clearAccountFromId() {
       accountFromId = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -415,7 +415,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * @param value The value of 'accountToId'.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder setAccountToId(java.lang.CharSequence value) {
+    public coordinator.schemas.balance.BalanceStarted.Builder setAccountToId(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.accountToId = value;
       fieldSetFlags()[3] = true;
@@ -435,7 +435,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * Clears the value of the 'accountToId' field.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder clearAccountToId() {
+    public coordinator.schemas.balance.BalanceStarted.Builder clearAccountToId() {
       accountToId = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -454,7 +454,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * @param value The value of 'amount'.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder setAmount(java.lang.CharSequence value) {
+    public coordinator.schemas.balance.BalanceStarted.Builder setAmount(java.lang.CharSequence value) {
       validate(fields()[4], value);
       this.amount = value;
       fieldSetFlags()[4] = true;
@@ -474,7 +474,7 @@ public class BalanceStarted extends org.apache.avro.specific.SpecificRecordBase 
       * Clears the value of the 'amount' field.
       * @return This builder.
       */
-    public coordinator.shared.avro.messages.BalanceStarted.Builder clearAmount() {
+    public coordinator.schemas.balance.BalanceStarted.Builder clearAmount() {
       amount = null;
       fieldSetFlags()[4] = false;
       return this;
