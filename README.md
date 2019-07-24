@@ -4,7 +4,7 @@
 
 Coordination is a [Saga](https://microservices.io/patterns/data/saga.html) approach where the coordination logic of business processes (e.g. financial transactions) is centralized in a *Saga Coordinator*, also known as *Reactive Orchestrator*. It uses the concept of **commands** and **events**, where commands are tasks that need to be done and events are tasks that have been done. 
 
-The Saga Coordinator produces commands to an event stream and the respective saga participants consume these commands. These participants produce their events after performing their operations and the coordinator consume these events.
+The Saga Coordinator produces commands to an event stream and the respective saga participants consume these commands. These participants produce their events after performing their operations and the coordinator consume these Event.
 
 ![Saga Coordinator](./images/saga-coordinator.jpg)
 
