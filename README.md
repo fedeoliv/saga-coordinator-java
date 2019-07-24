@@ -31,6 +31,6 @@ The sample contains an FSM Saga Coordinator using [Spring Statemachine](https://
 
 The lab is divided in the following steps:
 
-- [Step 1: Understanding the workflow]() (WIP)
+- [Step 1: Understanding the workflow](./docs/workflow.md)
 - [Step 2: Updating Application Properties]() (WIP)
 - [Step 3: Build and run as Docker container]() (WIP)
