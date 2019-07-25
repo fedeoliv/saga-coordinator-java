@@ -1,0 +1,19 @@
+{
+    "type": "record",
+    "name": "TransferSucceded",
+    "namespace": "coordinator.schemas.transfer",
+    "fields": [
+        {
+            "name": "transactionId",
+            "type": "string"
+        },
+        {
+            "name": "correlationId",
+            "type": "string"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        }
+    ]
+}

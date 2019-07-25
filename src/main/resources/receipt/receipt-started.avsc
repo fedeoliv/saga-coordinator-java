@@ -1,0 +1,27 @@
+{
+    "type": "record",
+    "name": "ReceiptStarted",
+    "namespace": "coordinator.schemas.receipt",
+    "fields": [
+        {
+            "name": "transactionId",
+            "type": "string"
+        },
+        {
+            "name": "correlationId",
+            "type": "string"
+        },
+        {
+            "name": "accountFromId",
+            "type": "string"
+        },
+        {
+            "name": "accountToId",
+            "type": "string"
+        },
+        {
+            "name": "amount",
+            "type": "string"
+        }
+    ]
+}
