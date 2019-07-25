@@ -10,10 +10,10 @@ import org.springframework.statemachine.action.Action;
 import coordinator.models.messaging.MessageHeader;
 import coordinator.models.messaging.ProducerResult;
 import coordinator.models.messaging.ProducerService;
-import coordinator.models.payloads.transfer.TransferAccepted;
 import coordinator.repositories.PayloadRepository;
+import coordinator.schemas.transfer.TransferAccepted;
+import coordinator.schemas.transfer.TransferError;
 import coordinator.utils.SpringMessageTools;
-import coordinator.models.payloads.transfer.TransferError;
 import coordinator.models.payloads.undo.UndoAllRequested;
 import coordinator.models.transitions.Event;
 import coordinator.models.transitions.State;
@@ -319,28 +319,34 @@ public class StateMachineAction implements StateAction {
 
 	private MessageHeader createHeaderFromTransfer(TransferAccepted transferAccepted, String eventType) {
 		MessageHeader header = new MessageHeader();
-		header.setTransactionId(transferAccepted.getTransactionId());
-		header.setCorrelationId(transferAccepted.getCorrelationId());
+
+		header.setTransactionId(transferAccepted.get("transactionId").toString());
+		header.setCorrelationId(transferAccepted.get("correlationId").toString());
 		header.setEventType(eventType);
 		header.setSource("Monitor");
+
 		return header;
 	}
 
 	private UndoAllRequested createUndoAllRequestFromTransfer(TransferAccepted transferAccepted) {
 		UndoAllRequested undoAllRequested = new UndoAllRequested();
-		undoAllRequested.setTransactionId(transferAccepted.getTransactionId());
-		undoAllRequested.setCorrelationId(transferAccepted.getCorrelationId());
-		undoAllRequested.setAccountFromId(transferAccepted.getAccountFromId());
-		undoAllRequested.setAccountToId(transferAccepted.getAccountToId());
-		undoAllRequested.setAmount(transferAccepted.getAmount());
+
+		undoAllRequested.setTransactionId(transferAccepted.get("transactionId").toString());
+		undoAllRequested.setCorrelationId(transferAccepted.get("correlationId").toString());
+		undoAllRequested.setAccountFromId(transferAccepted.get("accountFromId").toString());
+		undoAllRequested.setAccountToId(transferAccepted.get("accountToId").toString());
+		undoAllRequested.setAmount((Double) transferAccepted.get("amount"));
+
 		return undoAllRequested;
 	}
 
 	private TransferError createTransferErrorFromTransfer(TransferAccepted transferAccepted, String message) {
 		TransferError transferError = new TransferError();
+
 		transferError.setTransactionId(transferAccepted.getTransactionId());
 		transferError.setCorrelationId(transferAccepted.getCorrelationId());
 		transferError.setMessage(message);
+		
 		return transferError;
 	}
 }

@@ -1,6 +1,6 @@
 {
     "type": "record",
-    "name": "TransferError",
+    "name": "TransferAccepted",
     "namespace": "coordinator.schemas.transfer",
     "fields": [
         {
@@ -12,7 +12,15 @@
             "type": "string"
         },
         {
-            "name": "message",
+            "name": "accountFromId",
+            "type": "string"
+        },
+        {
+            "name": "accountToId",
+            "type": "string"
+        },
+        {
+            "name": "amount",
             "type": "string"
         }
     ]

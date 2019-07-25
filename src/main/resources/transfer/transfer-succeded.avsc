@@ -1,6 +1,6 @@
 {
     "type": "record",
-    "name": "TransferError",
+    "name": "TransferSucceded",
     "namespace": "coordinator.schemas.transfer",
     "fields": [
         {
