@@ -13,8 +13,8 @@ import coordinator.models.messaging.ProducerService;
 import coordinator.repositories.PayloadRepository;
 import coordinator.schemas.transfer.TransferAccepted;
 import coordinator.schemas.transfer.TransferError;
+import coordinator.schemas.undo.UndoAllRequested;
 import coordinator.utils.SpringMessageTools;
-import coordinator.models.payloads.undo.UndoAllRequested;
 import coordinator.models.transitions.Event;
 import coordinator.models.transitions.State;
 
@@ -335,7 +335,7 @@ public class StateMachineAction implements StateAction {
 		undoAllRequested.setCorrelationId(transferAccepted.get("correlationId").toString());
 		undoAllRequested.setAccountFromId(transferAccepted.get("accountFromId").toString());
 		undoAllRequested.setAccountToId(transferAccepted.get("accountToId").toString());
-		undoAllRequested.setAmount((Double) transferAccepted.get("amount"));
+		undoAllRequested.setAmount(transferAccepted.get("amount").toString());
 
 		return undoAllRequested;
 	}
