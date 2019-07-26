@@ -23,7 +23,7 @@ The sample contains an FSM Saga Coordinator using [Spring Statemachine](https://
 
 - Java JDK 8 or later
 - Maven 3.0 or later
-- Confluent Kafka + Schema Registry services running. If you want to run locally as Docker containers, follow the instructions [here](https://hub.docker.com/r/confluent/kafka).
+- Confluent Kafka + Zookeper + Schema Registry services running. If you want to run locally as Docker containers, follow the instructions [here](https://hub.docker.com/r/confluent/kafka).
 - Redis instance running. If you want to run locally as Docker container, follow the instructions [here](https://hub.docker.com/_/redis/).
 - MongoDB instance running. If you want to run locally as Docker container, follow the instructions [here](https://hub.docker.com/_/mongo).
 
