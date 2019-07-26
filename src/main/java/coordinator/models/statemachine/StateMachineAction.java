@@ -284,35 +284,33 @@ public class StateMachineAction implements StateAction {
 	private ProducerResult sendTransferFailedMessage(StateContext<State, Event> context, String textMessage) {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
-		Message<?> transferAcceptedMessage = payloadsRepository
+		TransferAccepted transferAccepted = (TransferAccepted) payloadsRepository
 			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
-				
-		TransferAccepted transferAccepted = (TransferAccepted) transferAcceptedMessage.getPayload();
+		
 		TransferError transferError = createTransferErrorFromTransfer(transferAccepted, textMessage);
 		MessageHeader header = createHeaderFromTransfer(transferAccepted, TransferError.class.getSimpleName());
 
 		Message<TransferError> message = MessageBuilder
-                .withPayload(transferError)
-                .setHeader(KafkaHeaders.MESSAGE_KEY, header)
-				.build();
-				
+			.withPayload(transferError)
+			.setHeader(KafkaHeaders.MESSAGE_KEY, header)
+			.build();
+			
 		return producer.send(message);
 	}
 
 	private ProducerResult sendUndoAllRequestMessage(StateContext<State, Event> context) {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
-		Message<?> transferAcceptedMessage = payloadsRepository
+		TransferAccepted transferAccepted = (TransferAccepted) payloadsRepository
 			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
 
-		TransferAccepted transferAccepted = (TransferAccepted) transferAcceptedMessage.getPayload();
 		UndoAllRequested undoAllRequested = createUndoAllRequestFromTransfer(transferAccepted);
 		MessageHeader header = createHeaderFromTransfer(transferAccepted, UndoAllRequested.class.getSimpleName());
 
 		Message<UndoAllRequested> message = MessageBuilder
-                .withPayload(undoAllRequested)
-                .setHeader(KafkaHeaders.MESSAGE_KEY, header)
-				.build();
+			.withPayload(undoAllRequested)
+			.setHeader(KafkaHeaders.MESSAGE_KEY, header)
+			.build();
 
 		return producer.send(message);
 	}

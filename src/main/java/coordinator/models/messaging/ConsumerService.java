@@ -1,5 +1,6 @@
 package coordinator.models.messaging;
 
+import org.apache.avro.generic.GenericRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import coordinator.helpers.StateMachineHelper;
 import coordinator.models.transitions.Event;
@@ -18,38 +21,31 @@ public class ConsumerService {
 
     @Autowired
     private StateMachineHelper stateMachineService;
-
+    
     @Autowired
     private PayloadRepository payloadRepository;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerService.class);
 
     @StreamListener(Processor.INPUT)
-    public void process(Message<?> message) throws Exception {
-        LOGGER.info("Let's process employee details: {}", message.getPayload());
-
+    public void process(
+        @Payload GenericRecord payload,
+        @Headers MessageHeader header,
+        @Header(KafkaHeaders.ACKNOWLEDGMENT) Acknowledgment ack) {
+        
+        LOGGER.info("Payload: {}", payload);
+        
         try {
-            payloadRepository.Add(message);
+            payloadRepository.Add(payload);
 
-            MessageHeader header = (MessageHeader) message.getHeaders().get(KafkaHeaders.MESSAGE_KEY);
             String transactionId = header.getTransactionId();
             Event event = Event.valueOf(header.getEventType());
             
             stateMachineService.sendEventForTransaction(transactionId, event);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-
-        commit(message);
-    }
-
-    private void commit(Message<?> message) {
-		Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
-		
-		if (acknowledgment != null) {
-           System.out.println("Acknowledgment provided");
-           acknowledgment.acknowledge();
+            LOGGER.error(e.getMessage());
+        } finally {
+            ack.acknowledge();
         }
     }
 }

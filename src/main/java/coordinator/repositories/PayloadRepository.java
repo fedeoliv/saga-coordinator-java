@@ -1,10 +1,10 @@
 
 package coordinator.repositories;
 
+import org.apache.avro.generic.GenericRecord;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.Message;
 
-public class PayloadRepository extends DefaultRepository<String, Message<?>> {
+public class PayloadRepository extends DefaultRepository<String, GenericRecord> {
     @Value("${spring.cosmosdb.collection}")
     private static String collection;
 
