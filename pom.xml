@@ -168,6 +168,7 @@
                             <goal>idl-protocol</goal>
                         </goals>
                         <configuration>                        
+                            <fieldVisibility>private</fieldVisibility>
                             <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
                             <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
                         </configuration>
