@@ -36,7 +36,7 @@ public class ConsumerService {
         LOGGER.info("Payload: {}", payload);
         
         try {
-            payloadRepository.Add(payload);
+            payloadRepository.add(payload);
 
             String transactionId = header.getTransactionId();
             Event event = Event.valueOf(header.getEventType());

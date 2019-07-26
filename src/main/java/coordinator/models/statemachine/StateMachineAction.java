@@ -285,7 +285,7 @@ public class StateMachineAction implements StateAction {
 		String transactionId = (String) context.getExtendedState().getVariables().get(SpringMessageTools.transactionId);
 
 		TransferAccepted transferAccepted = (TransferAccepted) payloadsRepository
-			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
+			.findByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
 		
 		TransferError transferError = createTransferErrorFromTransfer(transferAccepted, textMessage);
 		MessageHeader header = createHeaderFromTransfer(transferAccepted, TransferError.class.getSimpleName());
@@ -302,7 +302,7 @@ public class StateMachineAction implements StateAction {
 		String transactionId = SpringMessageTools.extractTransactionId(context);
 
 		TransferAccepted transferAccepted = (TransferAccepted) payloadsRepository
-			.FindOneByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
+			.findByFilter("eventType", TransferAccepted.class.getSimpleName(), "transactionId", transactionId);
 
 		UndoAllRequested undoAllRequested = createUndoAllRequestFromTransfer(transferAccepted);
 		MessageHeader header = createHeaderFromTransfer(transferAccepted, UndoAllRequested.class.getSimpleName());

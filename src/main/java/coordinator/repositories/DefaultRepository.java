@@ -26,54 +26,54 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
         this.mongoCollection = mongoDatabase.getCollection(collection);
         this.keyName = keyName;
         this.gson = new Gson();
-        this.beanTypeTEntity = GetBeanType();
+        this.beanTypeTEntity = getBeanType();
         mongoClient.close();
     }
 
     @Override
-    public TEntity Add(TEntity value) {
-        Document document = ConvertFromEntityToDocument(value);
+    public TEntity add(TEntity value) {
+        Document document = convertFromEntityToDocument(value);
         mongoCollection.insertOne(document);
 
         return value;
     }
 
     @Override
-    public TEntity Update(TKey key, TEntity value) {
-        Document document = ConvertFromEntityToDocument(value);
+    public TEntity update(TKey key, TEntity value) {
+        Document document = convertFromEntityToDocument(value);
         mongoCollection.updateOne(eq(keyName, key), new Document("$set", document));
 
         return value;
     }
 
     @Override
-    public void Delete(TKey key) {
+    public void delete(TKey key) {
         mongoCollection.deleteOne(eq(keyName, key));
     }
 
     @Override
-    public TEntity FindOneByKey(TKey key) {
+    public TEntity findByKey(TKey key) {
         Document myDocObj = mongoCollection.find(eq(keyName, key)).first();
-        TEntity value = ConvertFromDocumentToEntity(myDocObj);
+        TEntity value = convertFromDocumentToEntity(myDocObj);
 
         return value;
     }
 
-    private TEntity FindOneByFilter(Bson filter) {
+    private TEntity findByFilter(Bson filter) {
         Document myDocObj = mongoCollection.find(filter).first();
-        TEntity value = ConvertFromDocumentToEntity(myDocObj);
+        TEntity value = convertFromDocumentToEntity(myDocObj);
 
         return value;
     }
 
     @Override
-    public List<TEntity> FindManyByFilter(Object filter) {
+    public List<TEntity> findManyByFilter(Object filter) {
         List<TEntity> list = new ArrayList<TEntity>();
 
         MongoCursor<Document> cursor = mongoCollection.find((Bson) filter).iterator();
         try {
             while (cursor.hasNext()) {
-                ConvertFromDocumentToEntity(cursor.next());
+                convertFromDocumentToEntity(cursor.next());
             }
         } finally {
             cursor.close();
@@ -82,7 +82,7 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
         return list;
     }
 
-    private Document ConvertFromEntityToDocument(TEntity value) {
+    private Document convertFromEntityToDocument(TEntity value) {
         // Serialize object to json string
         String json = gson.toJson(value);
         // Parse to bson document
@@ -91,7 +91,7 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
         return document;
     }
 
-    private TEntity ConvertFromDocumentToEntity(Document document) {
+    private TEntity convertFromDocumentToEntity(Document document) {
         // Deserialize object to json string
         String myDocJson = document.toJson();
         // Parse to TEntity
@@ -101,17 +101,17 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
     }
 
     @SuppressWarnings("unchecked")
-    private Class<TEntity> GetBeanType() {
+    private Class<TEntity> getBeanType() {
         return ((Class<TEntity>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]);
     }
 
     @Override
-    public TEntity FindOneByFilter(String key1, String value1) {
-        return FindOneByFilter(eq(key1, value1));
+    public TEntity findByFilter(String key1, String value1) {
+        return findByFilter(eq(key1, value1));
     }
 
     @Override
-    public TEntity FindOneByFilter(String key1, String value1, String key2, String value2) {
-        return FindOneByFilter(and(eq(key1, value1), eq(key2, value2)));
+    public TEntity findByFilter(String key1, String value1, String key2, String value2) {
+        return findByFilter(and(eq(key1, value1), eq(key2, value2)));
     }
 }
