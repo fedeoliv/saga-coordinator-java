@@ -17,7 +17,8 @@ public class ProducerService {
 
         try {
             MessageChannel messageChannel = processor.output();
-            messageChannel.send(message);
+            boolean messageAccepted = messageChannel.send(message);
+            result.setValid(messageAccepted);
         } catch (RuntimeException e) {
             result.setValid(false);
             result.setErrorMessage("Error while sending message to event stream");
