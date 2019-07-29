@@ -20,14 +20,21 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
     private final Gson gson;
     private final Class<TEntity> beanTypeTEntity;
 
-    public DefaultRepository(String mongoConnectionString, String database, String collection, String keyName) {
-        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoConnectionString));
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
-        this.mongoCollection = mongoDatabase.getCollection(collection);
+    public DefaultRepository(String connectionString, String database, String collection, String keyName) {
+        this.mongoCollection = getMongoCollection(connectionString, database, collection);
         this.keyName = keyName;
         this.gson = new Gson();
         this.beanTypeTEntity = getBeanType();
+    }
+
+    private MongoCollection<Document> getMongoCollection(String connectionString, String database, String collection) {
+        MongoClientURI uri = new MongoClientURI(connectionString);
+        MongoClient mongoClient = new MongoClient(uri);
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+
         mongoClient.close();
+
+        return mongoDatabase.getCollection(collection);
     }
 
     @Override
@@ -69,8 +76,8 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
     @Override
     public List<TEntity> findManyByFilter(Object filter) {
         List<TEntity> list = new ArrayList<TEntity>();
-
         MongoCursor<Document> cursor = mongoCollection.find((Bson) filter).iterator();
+
         try {
             while (cursor.hasNext()) {
                 convertFromDocumentToEntity(cursor.next());
@@ -83,18 +90,14 @@ public class DefaultRepository<TKey, TEntity> implements Repository<TKey, TEntit
     }
 
     private Document convertFromEntityToDocument(TEntity value) {
-        // Serialize object to json string
         String json = gson.toJson(value);
-        // Parse to bson document
         Document document = Document.parse(json);
 
         return document;
     }
 
     private TEntity convertFromDocumentToEntity(Document document) {
-        // Deserialize object to json string
         String myDocJson = document.toJson();
-        // Parse to TEntity
         TEntity value = this.gson.fromJson(myDocJson, this.beanTypeTEntity);
 
         return value;
