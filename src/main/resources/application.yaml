@@ -1,14 +1,16 @@
-spring:
-  redis:
-    host:
-    port:
+cosmosdb:
+  connectionString: 
+  database: 
+  collection: 
+  key: 
+  
+redis:
+    host: localhost
+    port: 6379
     password:
-    ssl:
-  cosmosdb:
-    connectionString: 
-    database: 
-    collection:
-    key: 
+    ssl: false
+    
+spring:
   cloud:
     stream:
       default: 

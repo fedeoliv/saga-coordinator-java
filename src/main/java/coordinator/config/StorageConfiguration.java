@@ -13,9 +13,15 @@ public class StorageConfiguration {
 
     @Value("${cosmosdb.database}")
     private String database;
+
+    @Value("${cosmosdb.collection}")
+    private String collection;
+
+    @Value("${cosmosdb.key}")
+    private String keyName;
     
     @Bean
     public PayloadRepository buildPayloadRepository() {
-        return new PayloadRepository(connectionString, database);
+        return new PayloadRepository(connectionString, database, collection, keyName);
     }
 } 

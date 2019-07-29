@@ -17,13 +17,13 @@ import coordinator.models.transitions.State;
 @Configuration
 public class StateMachineStorageConfiguration {
 
-	@Value("${spring.redis.host}")
+	@Value("${redis.host}")
 	private String hostName;
 
-	@Value("${spring.redis.port}")
+	@Value("${redis.port}")
 	private int port;
 	
-	@Value("${spring.redis.password}")
+	@Value("${redis.password}")
 	private String password;
 
 	@Bean
