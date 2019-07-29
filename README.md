@@ -12,12 +12,13 @@ The Saga Coordinator can be implemented as a Finite State Machine (FSM), where i
 
 ## About the sample
 
-The sample contains an FSM Saga Coordinator using [Spring Statemachine](https://projects.spring.io/spring-statemachine/) as the foundation and [Apache Kafka](https://kafka.apache.org/intro.html) as the distributed streaming platform. The state machine has the following components and features:
+The sample contains an FSM Saga Coordinator using [Spring Statemachine](https://projects.spring.io/spring-statemachine/) as the foundation and [Confluent Kafka](https://www.confluent.io/) as the distributed streaming platform. The state machine is built with:
 
 - [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream-binder-kafka/) with Kafka binder to allow transparent connectivity with Kafka topics
-- [Apache Avro](https://avro.apache.org/) for data serialization
-- [Redis](https://redis.io/) to persist the state machine context
-- [MongoDb](https://www.mongodb.com/) to persist all payloads used in transitions between nodes
+- [Apache Avro](https://avro.apache.org/) for data serialization and definition of compatile schemas for events and commands
+- [Confluent Schema Registry](https://www.confluent.io/confluent-schema-registry/) to version and store Avro schemas
+- [Redis](https://redis.io/) for the state machine context persistence
+- [Azure Cosmos DB (MongoDB API)](https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction) to persist all payloads used in transitions between nodes
 
 ## Prerequisites
 
