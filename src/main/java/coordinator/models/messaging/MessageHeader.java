@@ -3,10 +3,10 @@ package coordinator.models.messaging;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
+import lombok.Data;
+
+@Data
 public class MessageHeader {
     private String id = UUID.randomUUID().toString();
     private String transactionId;

@@ -1,9 +1,8 @@
 package coordinator.models.messaging;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 public class ProducerResult {
     private boolean valid = true;
     private String errorMessage;
