@@ -1,65 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sample.coordinator</groupId>
-    <artifactId>saga-coordinator</artifactId>
-    <version>0.1.0</version>
-    <properties>
-        <maven.compiler.release>11</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <slf4j.version>1.8.0-beta2</slf4j.version>
-    </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.8.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.sample</groupId>
+	<artifactId>coordinator</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>coordinator</name>
+	<description>Saga coordinator sample</description>
+
+	<properties>
+        <java.version>12</java.version>
+        <tomcat.version>8.5.23</tomcat.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.21.0</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.sample.coordinator.App</mainClass>
-                        </manifest>
-                    </archive>
+                    <forkCount>0</forkCount>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>6.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
+            
+			<!-- <plugin>
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
                 <version>1.0.0.Beta2</version>
                 <executions>
-                    <execution>
-                        <id>add-module-info</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>add-module-info</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
-                          <overwriteExistingFiles>true</overwriteExistingFiles>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>create-runtime-image</id>
                         <phase>package</phase>
@@ -72,37 +74,201 @@
                                 <path>${project.build.directory}/modules</path>
                             </modulePath>
                             <modules>
-                                <module>com.sample.jlink</module>
-                                <module>org.slf4j.simple</module>
+                                <module>com.sample.coordinator.jlink</module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.boot</groupId>
+                                        <artifactId>spring-boot-autoconfigure</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>spring.boot.autoconfigure</name>
+                                    </moduleInfo>
+                                </module>
                             </modules>
                             <launcher>
                                 <name>hello</name>
-                                <module>com.sample.jlink/com.sample.coordinator.App</module>
+                                <module>com.sample.coordinator.jlink/com.sample.coordinator.CoordinatorApplication</module>
                             </launcher>
                             <outputDirectory>${project.build.directory}/jlink-image</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin> -->
+
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.Beta1</version>
+                <executions>
+                    <execution>
+                        <id>add-module-info-to-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <modules>
+                                <module>
+                                    <artifact>
+                                        <groupId>javax.validation</groupId>
+                                        <artifactId>validation-api</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module java.validation {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.apache.commons</groupId>
+                                        <artifactId>commons-lang3</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module org.apache.commons.lang3 {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework</groupId>
+                                        <artifactId>spring-core</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.core {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework</groupId>
+                                        <artifactId>spring-web</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.web {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.boot</groupId>
+                                        <artifactId>spring-boot</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.boot {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.boot</groupId>
+                                        <artifactId>spring-boot-autoconfigure</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.boot.autoconfigure {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework</groupId>
+                                        <artifactId>spring-context</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.context {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.data</groupId>
+                                        <artifactId>spring-data-commons</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.data.commons {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.data</groupId>
+                                        <artifactId>spring-data-jpa</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.data.jpa {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework.security</groupId>
+                                        <artifactId>spring-security-core</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.security.core {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework</groupId>
+                                        <artifactId>spring-tx</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.tx {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.springframework</groupId>
+                                        <artifactId>spring-webmvc</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module spring.webmvc {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.apache.tomcat.embed</groupId>
+                                        <artifactId>tomcat-embed-core</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module tomcat.embed.core {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-runtime-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>create-runtime-image</goal>
+                        </goals>
+                        <configuration>
+                            <modulePath>
+                                <path>${project.build.directory}/classes</path>
+                                <path>${project.build.directory}/modules</path>
+                            </modulePath>
+                            <modules>
+                                <module>com.sample.coordinator.jlink</module>
+                            </modules>
+                            <launcher>
+                                <name>hello</name>
+                                <module>com.sample.coordinator.jlink/com.sample.coordinator.CoordinatorApplication</module>
+                            </launcher>
+                            <outputDirectory>
+                                ${project.build.directory}/jlink-image
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.11</version>
-          <scope>test</scope>
-        </dependency>
-    </dependencies>
+		</plugins>
+	</build>
+
 </project>
